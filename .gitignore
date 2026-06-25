@@ -1,0 +1,18 @@
+# Entornos Virtuales
+.venv/
+venv/
+env/
+__pycache__/
+
+# Node
+node_modules/
+dist/
+.env
+
+# Base de datos y Vector Store
+chroma_db/
+chat_history.db
+
+# Logs y SO
+*.log
+.DS_Store
