@@ -1,0 +1,18 @@
+{
+  "empresa": "TechStore Corporativo",
+  "departamento": "Finanzas",
+  "politicas_gastos": [
+    {
+      "tipo": "Viáticos",
+      "limite_diario": 50,
+      "moneda": "USD",
+      "descripcion": "Límite de gastos de alimentación en viajes de negocio."
+    },
+    {
+      "tipo": "Hardware",
+      "limite_anual": 1500,
+      "moneda": "USD",
+      "descripcion": "Presupuesto para renovación de equipo de cómputo."
+    }
+  ]
+}
