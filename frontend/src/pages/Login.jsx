@@ -26,6 +26,9 @@ function Login() {
       
       const data = await res.json();
       localStorage.setItem('admin_token', data.access_token);
+      // Limpiar sesiones de chat para empezar de cero
+      localStorage.removeItem('chat_session_id');
+      localStorage.removeItem('admin_chat_session_id');
       navigate('/admin');
     } catch (err) {
       setError(err.message);
@@ -58,7 +61,7 @@ function Login() {
           onClick={() => navigate('/')} 
           style={{ background: 'transparent', border: 'none', color: '#94a3b8', marginTop: '20px', cursor: 'pointer', textDecoration: 'underline' }}
         >
-          Volver al chat
+          Volver a la tienda
         </button>
       </div>
     </div>

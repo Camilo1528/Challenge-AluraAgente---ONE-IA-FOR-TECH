@@ -1,74 +1,49 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useRef, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { TypingMessage } from './Chat';
 
-// Sanitiza entrada de usuario para prevenir XSS e inyecciones
-const sanitizeInput = (text) => {
-  if (!text) return '';
-  // Eliminar caracteres de control peligrosos
-  return text.replace(/[<>&"'\x00-\x08\x0B\x0C\x0E-\x1F]/g, '').trim();
-};
-
-const getSessionId = () => {
-  let sid = localStorage.getItem('chat_session_id');
+const getAdminSessionId = () => {
+  let sid = localStorage.getItem('admin_chat_session_id');
   if (!sid) {
-    sid = 'session_' + Math.random().toString(36).substring(2, 15) + '_' + Date.now();
-    localStorage.setItem('chat_session_id', sid);
+    sid = 'admin_' + Math.random().toString(36).substring(2, 15) + '_' + Date.now();
+    localStorage.setItem('admin_chat_session_id', sid);
   }
   return sid;
 };
 
-export { getSessionId };
-
-const TypingMessage = ({ content }) => {
-  const [displayedText, setDisplayedText] = useState('');
-  
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setDisplayedText(prev => {
-        if (prev.length < content.length) {
-          return prev + content.charAt(prev.length);
-        } else {
-          clearInterval(interval);
-          return prev;
-        }
-      });
-    }, 15);
-    return () => clearInterval(interval);
-  }, [content]);
-  
-  return <span>{displayedText}</span>;
-};
-
-export { TypingMessage };
-
-function Chat() {
+function AdminChat() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
-  const category = 'Inventario'; // Público: Forzado a Inventario
+  const [category, setCategory] = useState('Todos');
   const messagesEndRef = useRef(null);
-  const [sessionId, setSessionId] = useState(getSessionId());
+  const navigate = useNavigate();
+  const [sessionId, setSessionId] = useState(getAdminSessionId());
 
   const startNewConversation = async () => {
-    // Limpiar historial en el backend
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
-      await fetch(`${apiUrl}/history/${sessionId}`, { method: 'DELETE' });
+      await fetch(`http://localhost:8000/history/${sessionId}`, { method: 'DELETE' });
     } catch (e) {
       console.error('Error limpiando historial:', e);
     }
-    // Generar nuevo session ID
-    localStorage.removeItem('chat_session_id');
-    const newSid = getSessionId();
+    localStorage.removeItem('admin_chat_session_id');
+    const newSid = getAdminSessionId();
     setSessionId(newSid);
     setMessages([]);
   };
 
+  // Protect route
+  useEffect(() => {
+    const token = localStorage.getItem('admin_token');
+    if (!token) {
+      navigate('/login');
+    }
+  }, [navigate]);
+
   useEffect(() => {
     const fetchHistory = async () => {
       try {
-        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
-        const res = await fetch(`${apiUrl}/history/${sessionId}`);
+        const res = await fetch(`http://localhost:8000/history/${sessionId}`);
         if (res.ok) {
           const data = await res.json();
           const loadedMsgs = data.history.map(msg => ({
@@ -93,43 +68,22 @@ function Chat() {
     scrollToBottom();
   }, [messages, loading]);
 
-  const handleSend = useCallback(async (text) => {
-    const cleanText = sanitizeInput(text);
-    if (!cleanText || cleanText.length < 2) return;
+  const handleSend = async (text, overrideCategory = null) => {
+    if (!text.trim()) return;
 
-    // Detección básica de prompt injection (lado cliente)
-    const injectionPatterns = [
-      /ignora\s*(instrucciones|reglas|sistema)/i,
-      /olvida\s*(todo|instrucciones)/i,
-      /act[úu]a\s*como/i,
-      /eres\s*(ahora|realmente)/i,
-      /reve[láa]|muestra|dice\s*(prompt|password|token)/i,
-    ];
-    for (const pattern of injectionPatterns) {
-      if (pattern.test(cleanText)) {
-        setMessages((prev) => [...prev, {
-          role: 'assistant',
-          content: '⚠️ No puedo procesar esa solicitud. Estoy aquí para ayudarte con productos y servicios de TechStore. ¿En qué más puedo ayudarte?',
-          isHistory: false
-        }]);
-        return;
-      }
-    }
-
-    const userMessage = { role: 'user', content: cleanText, isHistory: false };
+    const userMessage = { role: 'user', content: text, isHistory: false };
     setMessages((prev) => [...prev, userMessage]);
     setInput('');
     setLoading(true);
 
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
-      const response = await fetch(`${apiUrl}/chat`, {
+      const response = await fetch('http://localhost:8000/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           session_id: sessionId,
-          message: cleanText,
-          category: category
+          message: text,
+          category: overrideCategory || category
         }),
       });
 
@@ -147,7 +101,7 @@ function Chat() {
     } finally {
       setLoading(false);
     }
-  }, [sessionId, category]);
+  };
 
   const renderMessageContent = (msg) => {
     const content = msg.content;
@@ -176,9 +130,6 @@ function Chat() {
             <span className="product-category">{cat}</span>
             <h4>{name}</h4>
             <p className="product-price">${price}</p>
-            <button className="buy-button" onClick={() => alert(`¡Añadido al carrito: ${name}!`)}>
-              Añadir al Carrito
-            </button>
           </div>
         </div>
       );
@@ -196,21 +147,28 @@ function Chat() {
       <div className="chat-container">
         <header className="chat-header" style={{ display: 'flex', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', alignItems: 'center' }}>
-            <div className="header-avatar">🤖</div>
+            <div className="header-avatar">👔</div>
             <div className="header-info">
-              <h1>Asistente de Compras</h1>
-              <p>Tu ayudante virtual personal</p>
+              <h1>TechStore Manager AI</h1>
+              <p>Acceso Total Empresarial (Privado)</p>
             </div>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <button onClick={startNewConversation} className="btn-login" style={{ background: 'transparent', color: 'var(--text-pure)', border: '1px solid var(--border-subtle)', boxShadow: 'none', cursor: 'pointer', fontSize: '14px' }}>
+            <select 
+              value={category} 
+              onChange={(e) => setCategory(e.target.value)}
+              style={{ padding: '8px', borderRadius: '8px', background: 'rgba(255,255,255,0.1)', color: 'white', border: '1px solid rgba(255,255,255,0.2)' }}
+            >
+              <option style={{color: 'black'}} value="Todos">Todos los Docs</option>
+              <option style={{color: 'black'}} value="RRHH">RRHH</option>
+              <option style={{color: 'black'}} value="Finanzas">Finanzas</option>
+              <option style={{color: 'black'}} value="Inventario">Inventario</option>
+            </select>
+            <button onClick={startNewConversation} style={{ padding: '8px 15px', background: 'transparent', color: 'white', border: '1px solid rgba(255,255,255,0.3)', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold', fontSize: '14px' }}>
               🆕 Nueva
             </button>
-            <Link to="/" className="btn-login" style={{ background: 'transparent', color: 'var(--text-pure)', border: '1px solid var(--border-subtle)', boxShadow: 'none' }}>
-              ⬅ Tienda
-            </Link>
-            <Link to="/admin" className="btn-login">
-              Administración
+            <Link to="/admin" style={{ padding: '8px 15px', background: 'rgba(255,255,255,0.2)', color: 'white', textDecoration: 'none', borderRadius: '8px', fontWeight: 'bold' }}>
+              ⬅ Volver a Admin
             </Link>
           </div>
         </header>
@@ -219,17 +177,17 @@ function Chat() {
           {messages.length === 0 ? (
             <div className="empty-chat">
               <div className="welcome-card">
-                <h2>¡Hola! 👋</h2>
-                <p>Soy tu Asistente de Compras Virtual. Estoy aquí para ayudarte a encontrar el producto perfecto en nuestra tienda.</p>
+                <h2>¡Hola Administrador! 👋</h2>
+                <p>Soy tu asistente inteligente empresarial. Tengo acceso total a documentos de RRHH, Finanzas e Inventario.</p>
                 <div className="quick-actions">
-                  <button className="chip" onClick={() => handleSend("¿Qué laptops me recomiendas para trabajar?")}>
-                    💻 Buscar Laptops
+                  <button className="chip" onClick={() => { setCategory('RRHH'); handleSend("¿Cuáles son las políticas de vacaciones?", 'RRHH'); }}>
+                    💼 Políticas de RRHH
                   </button>
-                  <button className="chip" onClick={() => handleSend("Busco unos audífonos con cancelación de ruido")}>
-                    🎧 Buscar Audífonos
+                  <button className="chip" onClick={() => { setCategory('Finanzas'); handleSend("Resumen financiero trimestral", 'Finanzas'); }}>
+                    💰 Revisar Finanzas
                   </button>
-                  <button className="chip" onClick={() => handleSend("¿Cuánto tardan los envíos a mi ciudad?")}>
-                    📦 Tiempos de Envío
+                  <button className="chip" onClick={() => { setCategory('Inventario'); handleSend("Reporte de laptops en stock", 'Inventario'); }}>
+                    📦 Estado de Inventario
                   </button>
                 </div>
               </div>
@@ -237,7 +195,7 @@ function Chat() {
           ) : (
             messages.map((msg, index) => (
               <div key={index} className={`message-wrapper ${msg.role}`}>
-                {msg.role === 'assistant' && <div className="avatar">🤖</div>}
+                {msg.role === 'assistant' && <div className="avatar">👔</div>}
                 <div className="message-bubble">
                   {renderMessageContent(msg)}
                 </div>
@@ -247,7 +205,7 @@ function Chat() {
           )}
           {loading && (
             <div className="message-wrapper assistant">
-              <div className="avatar">🤖</div>
+              <div className="avatar">👔</div>
               <div className="message-bubble loading">
                 <span className="dot"></span>
                 <span className="dot"></span>
@@ -263,12 +221,12 @@ function Chat() {
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Pregúntame sobre cualquier producto..."
+            placeholder={`Buscando en [${category}]... Pregunta lo que necesites:`}
             disabled={loading}
             maxLength={1000}
           />
           <button type="submit" disabled={loading || !input.trim()}>
-            Enviar
+            Consultar
           </button>
         </form>
       </div>
@@ -276,4 +234,4 @@ function Chat() {
   );
 }
 
-export default Chat;
+export default AdminChat;
