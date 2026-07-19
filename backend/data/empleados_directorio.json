@@ -1,0 +1,14 @@
+[
+    {
+        "id": "E001",
+        "nombre": "Juan Perez",
+        "cargo": "Vendedor",
+        "departamento": "RRHH"
+    },
+    {
+        "id": "E002",
+        "nombre": "Ana Gomez",
+        "cargo": "Soporte",
+        "departamento": "RRHH"
+    }
+]

@@ -1,0 +1,20 @@
+[
+    {
+        "id": "P001",
+        "nombre": "TechSupplies Inc",
+        "categoria": "Componentes",
+        "contacto": "ventas@techsupplies.com"
+    },
+    {
+        "id": "P002",
+        "nombre": "Global Electronics",
+        "categoria": "Computadoras",
+        "contacto": "global@gelectronics.com"
+    },
+    {
+        "id": "P003",
+        "nombre": "Accessories Max",
+        "categoria": "Perifericos",
+        "contacto": "info@accmax.com"
+    }
+]
