@@ -168,7 +168,7 @@ function Store() {
   const [reviewMessage, setReviewMessage] = useState('');
 
   const fetchProducts = () => {
-    fetch('http://localhost:8000/products')
+    fetch(`${API_URL}/products`)
       .then(res => res.json())
       .then(data => {
         setProducts(data.products || []);
@@ -271,7 +271,7 @@ function Store() {
     const total = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
 
     try {
-      const res = await fetch('http://localhost:8000/checkout', {
+      const res = await fetch(`${API_URL}/checkout`, {
         method: 'POST',
         headers: { 
           'Authorization': `Bearer ${token}`,
@@ -300,7 +300,7 @@ function Store() {
     const endpoint = authMode === 'login' ? 'login/user' : 'register';
     
     try {
-      const res = await fetch(`http://localhost:8000/${endpoint}`, {
+      const res = await fetch(`${API_URL}/${endpoint}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(authForm)
@@ -328,7 +328,7 @@ function Store() {
 
   const handleGoogleMockLogin = async () => {
     try {
-      const res = await fetch('http://localhost:8000/auth/google/mock', {
+      const res = await fetch(`${API_URL}/auth/google/mock`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: 'usuario@gmail.com', name: 'Usuario Demo' })
@@ -354,7 +354,7 @@ function Store() {
   const fetchMyOrders = async () => {
     const token = localStorage.getItem('user_token');
     try {
-      const res = await fetch('http://localhost:8000/my-orders', {
+      const res = await fetch(`${API_URL}/my-orders`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await res.json();
@@ -369,7 +369,7 @@ function Store() {
     setSelectedProduct(product);
     setReviewMessage('');
     try {
-      const res = await fetch(`http://localhost:8000/products/${product.id}/reviews`);
+      const res = await fetch(`${API_URL}/products/${product.id}/reviews`);
       const data = await res.json();
       setReviews(data.reviews || []);
     } catch (err) {
@@ -385,7 +385,7 @@ function Store() {
     }
     const token = localStorage.getItem('user_token');
     try {
-      const res = await fetch(`http://localhost:8000/products/${selectedProduct.id}/reviews`, {
+      const res = await fetch(`${API_URL}/products/${selectedProduct.id}/reviews`, {
         method: 'POST',
         headers: { 
           'Authorization': `Bearer ${token}`,

@@ -2,6 +2,9 @@ import { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { TypingMessage } from './Chat';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+
+
 const getAdminSessionId = () => {
   let sid = localStorage.getItem('admin_chat_session_id');
   if (!sid) {
@@ -22,7 +25,7 @@ function AdminChat() {
 
   const startNewConversation = async () => {
     try {
-      await fetch(`http://localhost:8000/history/${sessionId}`, { method: 'DELETE' });
+      await fetch(`${API_URL}/history/${sessionId}`, { method: 'DELETE' });
     } catch (e) {
       console.error('Error limpiando historial:', e);
     }
@@ -43,7 +46,7 @@ function AdminChat() {
   useEffect(() => {
     const fetchHistory = async () => {
       try {
-        const res = await fetch(`http://localhost:8000/history/${sessionId}`);
+        const res = await fetch(`${API_URL}/history/${sessionId}`);
         if (res.ok) {
           const data = await res.json();
           const loadedMsgs = data.history.map(msg => ({
@@ -77,7 +80,7 @@ function AdminChat() {
     setLoading(true);
 
     try {
-      const response = await fetch('http://localhost:8000/chat', {
+      const response = await fetch(`${API_URL}/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 

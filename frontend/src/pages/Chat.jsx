@@ -1,6 +1,9 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+
+
 // Sanitiza entrada de usuario para prevenir XSS e inyecciones
 const sanitizeInput = (text) => {
   if (!text) return '';

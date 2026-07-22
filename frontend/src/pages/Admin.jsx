@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+
+
 function Admin() {
   const [file, setFile] = useState(null);
   const [message, setMessage] = useState('');
@@ -35,7 +38,7 @@ function Admin() {
 
   const fetchProducts = async () => {
     try {
-      const res = await fetch('http://localhost:8000/products');
+      const res = await fetch(`${API_URL}/products`);
       const data = await res.json();
       setProducts(data.products || []);
     } catch (err) {
@@ -46,7 +49,7 @@ function Admin() {
   const fetchOrders = async () => {
     const token = localStorage.getItem('admin_token');
     try {
-      const res = await fetch('http://localhost:8000/orders', {
+      const res = await fetch(`${API_URL}/orders`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await res.json();
@@ -59,7 +62,7 @@ function Admin() {
   const updateOrderStatus = async (orderId, newStatus) => {
     const token = localStorage.getItem('admin_token');
     try {
-      const res = await fetch(`http://localhost:8000/orders/${orderId}/status`, {
+      const res = await fetch(`${API_URL}/orders/${orderId}/status`, {
         method: 'PUT',
         headers: { 
           'Authorization': `Bearer ${token}`,
@@ -89,7 +92,7 @@ function Admin() {
 
     try {
       setMessage('Subiendo y reindexando... ⏳');
-      const res = await fetch('http://localhost:8000/upload', {
+      const res = await fetch(`${API_URL}/upload`, {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}` },
         body: formData
@@ -116,7 +119,7 @@ function Admin() {
     const token = localStorage.getItem('admin_token');
     try {
       setMessage('Sincronizando con Drive... ⏳');
-      const res = await fetch('http://localhost:8000/sync-drive', {
+      const res = await fetch(`${API_URL}/sync-drive`, {
         method: 'POST',
         headers: { 
           'Authorization': `Bearer ${token}`,
@@ -138,7 +141,7 @@ function Admin() {
   const updateProductData = async (product) => {
     const token = localStorage.getItem('admin_token');
     try {
-      const res = await fetch(`http://localhost:8000/products/${product.id}`, {
+      const res = await fetch(`${API_URL}/products/${product.id}`, {
         method: 'PUT',
         headers: { 
           'Authorization': `Bearer ${token}`,
@@ -161,7 +164,7 @@ function Admin() {
     if (!window.confirm("¿Seguro que deseas eliminar este producto definitivamente?")) return;
     const token = localStorage.getItem('admin_token');
     try {
-      const res = await fetch(`http://localhost:8000/products/${id}`, {
+      const res = await fetch(`${API_URL}/products/${id}`, {
         method: 'DELETE',
         headers: { 
           'Authorization': `Bearer ${token}`
@@ -191,7 +194,7 @@ function Admin() {
         const formData = new FormData();
         formData.append('file', productImageFile);
         
-        const uploadRes = await fetch('http://localhost:8000/upload-product-image', {
+        const uploadRes = await fetch(`${API_URL}/upload-product-image`, {
           method: 'POST',
           headers: { 'Authorization': `Bearer ${token}` },
           body: formData
@@ -204,7 +207,7 @@ function Admin() {
 
       // 2. Crear producto
       setInvMessage('Creando producto... ⏳');
-      const res = await fetch('http://localhost:8000/products', {
+      const res = await fetch(`${API_URL}/products`, {
         method: 'POST',
         headers: { 
           'Authorization': `Bearer ${token}`,
@@ -236,7 +239,7 @@ function Admin() {
     e.preventDefault();
     const token = localStorage.getItem('admin_token');
     try {
-      const res = await fetch('http://localhost:8000/admin/password', {
+      const res = await fetch(`${API_URL}/admin/password`, {
         method: 'PUT',
         headers: { 
           'Authorization': `Bearer ${token}`,
