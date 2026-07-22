@@ -16,3 +16,10 @@ chat_history.db
 # Logs y SO
 *.log
 .DS_Store
+
+# Additions
+*.db
+*.db-shm
+*.db-wal
+credentials.json
+

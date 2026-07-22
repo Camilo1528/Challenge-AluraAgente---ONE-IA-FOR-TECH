@@ -1,3 +1,6 @@
+# ============================================
+# TechStore 2026 - Docker Compose Seguro
+# ============================================
 version: '3.8'
 
 services:
@@ -6,22 +9,52 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     container_name: techstore-backend
+    restart: unless-stopped
     ports:
       - "8000:8000"
     environment:
-      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY:?GOOGLE_API_KEY es requerida}
+      - SECRET_KEY=${SECRET_KEY:?SECRET_KEY es requerida (mín 32 caracteres)}
+      - ADMIN_USER=${ADMIN_USER:-admin}
+      - ADMIN_PASS=${ADMIN_PASS:-}
+      - ENVIRONMENT=${ENVIRONMENT:-production}
+      - CORS_ORIGINS=${CORS_ORIGINS:-}
+      - DATA_RETENTION_DAYS=${DATA_RETENTION_DAYS:-90}
+      - DB_PATH=/app/chat_history.db
+      - CHROMA_DB_DIR=/app/chroma_db
+      - LOG_DIR=/app/logs
     volumes:
       - ./backend/data:/app/data
       - ./backend/chat_history.db:/app/chat_history.db
+      - ./backend/chroma_db:/app/chroma_db
+      - ./backend/logs:/app/logs
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+    networks:
+      - techstore-network
 
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
     container_name: techstore-frontend
+    restart: unless-stopped
     ports:
       - "5173:5173"
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
     environment:
       - VITE_API_URL=http://localhost:8000
+      - VITE_ENVIRONMENT=${ENVIRONMENT:-production}
+    networks:
+      - techstore-network
+
+networks:
+  techstore-network:
+    driver: bridge
+    name: techstore-network

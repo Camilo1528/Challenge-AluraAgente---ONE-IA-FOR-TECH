@@ -1,19 +1,52 @@
-fastapi
-uvicorn
-pydantic
-langchain
-langchain-google-genai
-langchain-community
-chromadb
-pandas
-python-dotenv
-pypdf
-docx2txt
-beautifulsoup4
-openpyxl
-reportlab
-python-jose[cryptography]
-passlib[bcrypt]
-python-multipart
-watchdog
-sentence-transformers
+# ============================================
+# TechStore 2026 - Dependencias Seguras
+# ============================================
+# Backend API & Server
+fastapi>=0.110
+uvicorn[standard]>=0.27
+pydantic>=2.5
+
+# AI / LangChain (2026)
+langchain>=1.0
+langchain-groq>=0.1
+langchain-google-genai>=4.0
+langchain-huggingface>=0.1
+langchain-community>=0.4
+chromadb>=1.5
+langgraph>=0.4
+
+# Sentence Transformers (Embeddings locales)
+sentence-transformers>=3.0
+
+# HuggingFace Transformers (LLM local de respaldo)
+transformers>=4.40
+torch>=2.0
+
+# Data Processing
+pandas>=2.0
+pypdf>=4.0
+docx2txt>=0.8
+beautifulsoup4>=4.12
+openpyxl>=3.1
+
+# Security & Auth
+python-jose[cryptography]>=3.3
+passlib[bcrypt]>=1.7
+bcrypt<4.1
+python-multipart>=0.0.18
+slowapi>=0.1.9
+
+# Environment & Config
+python-dotenv>=1.0
+cryptography>=44.0
+
+# File Watching
+watchdog>=4.0
+
+# Google APIs (Drive)
+google-api-python-client>=2.130
+google-auth-httplib2>=0.2
+google-auth-oauthlib>=1.2
+
+# Reports (opcional)
+reportlab>=4.0
