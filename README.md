@@ -7,6 +7,8 @@
 Puedes probar el proyecto completamente funcional en la nube a través de los siguientes enlaces:
 * 🛒 **TechStore Público (Ventas & Clientes):** [https://neon-hamster-4ebf49.netlify.app/](https://neon-hamster-4ebf49.netlify.app/)
 * 🔒 **Dashboard Admin Corporativo:** [https://neon-hamster-4ebf49.netlify.app/admin/chat](https://neon-hamster-4ebf49.netlify.app/admin/chat)
+  * **Usuario:** `admin`
+  * **Contraseña:** `admin123`
 
 *(Nota: Al estar hospedado el backend en Render gratuito, el primer mensaje puede tardar hasta ~50 segundos en responder mientras el contenedor "despierta" de su estado de hibernación).*
 
