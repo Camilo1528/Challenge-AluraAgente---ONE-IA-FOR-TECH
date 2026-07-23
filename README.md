@@ -30,8 +30,7 @@ En el siguiente video se puede evidenciar el funcionamiento completo:
 - El Assistant IA consultando productos de SQLite.
 - El RAG trayendo documentos privados para el Admin.
 
-*(Añade aquí el link a tu video subido en YouTube, Loom, o el archivo .mp4)*
-[▶️ **Ver Video de Demostración**](https://tu-link-de-video-aqui.com)
+![Video Demostrativo](./assets/challenge_demo.mp4)
 
 ---
 
