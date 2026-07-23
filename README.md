@@ -30,9 +30,7 @@ En el siguiente video se puede evidenciar el funcionamiento completo:
 - El Assistant IA consultando productos de SQLite.
 - El RAG trayendo documentos privados para el Admin.
 
-<video src="https://github.com/Camilo1528/Challenge-AluraAgente---ONE-IA-FOR-TECH/raw/main/assets/challenge_demo.mp4" controls="controls" muted="muted" style="max-height:640px;">
-  Tu navegador no soporta el tag de video.
-</video>
+https://github.com/Camilo1528/Challenge-AluraAgente---ONE-IA-FOR-TECH/raw/main/assets/challenge_demo.mp4
 
 ---
 
