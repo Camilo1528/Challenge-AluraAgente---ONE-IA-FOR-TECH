@@ -4,7 +4,7 @@ services:
     env: python
     plan: free
     buildCommand: "cd backend && pip install --no-cache-dir -r requirements.txt"
-    startCommand: "cd backend && uvicorn api:app --host 0.0.0.0 --port $PORT"
+    startCommand: "cd backend && python -c 'import database; database.init_db()' && python seed_real_products.py && uvicorn api:app --host 0.0.0.0 --port $PORT"
     envVars:
       - key: PYTHON_VERSION
         value: "3.10.13"
