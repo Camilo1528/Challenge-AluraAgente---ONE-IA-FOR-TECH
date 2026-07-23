@@ -12,37 +12,37 @@ El proyecto está diseñado bajo una arquitectura de microservicios separando el
     *   **Chat Público (Tienda):** Entrenado para ser un vendedor estrella, sugerir productos, generar tarjetas de producto (Product Cards visuales) e impulsar ventas.
     *   **Chat Privado (Admin):** Entrenado con un tono corporativo y estricto, capaz de consultar finanzas, recursos humanos e inventarios internos sin revelar secretos comerciales a usuarios no autorizados.
 *   **Interfaz Premium Glassmorphism & 3D:** El Frontend utiliza **Three.js** para modelos espaciales dinámicos y librerías como **Framer Motion** y **MagicUI** para proveer una experiencia visual "WOW" con micro-animaciones, destellos espaciales y tarjetas holográficas.
-*   **Gestión Segura de Estado:** Las sesiones se administran vía SQLite de manera local, manteniendo un historial contextual completo (Memory Buffer) para que el asistente recuerde el hilo de la conversación.
+*   **Gestión Segura de Estado & Auto-Seeding en la Nube:** Las sesiones y los productos de la tienda de eCommerce se administran vía SQLite. El backend está optimizado para entornos de servidores efímeros (como Render.com) ya que auto-inicializa y puebla la base de datos dinámica y automáticamente en cada arranque.
 
 ## 🏗 Arquitectura de la Solución
 
-El sistema emplea un flujo de datos asíncrono y desacoplado:
+El sistema emplea un flujo de datos asíncrono y desacoplado, listo para Producción:
 
-1.  **Ingesta Vectorial:** Un script lee los archivos de RRHH, Finanzas e Inventario, extrae su texto usando cargadores nativos de LangChain, los divide con `RecursiveCharacterTextSplitter`, y los indexa en **ChromaDB** usando Embeddings de Google Generative AI.
-2.  **API RESTful:** `FastAPI` maneja las solicitudes del cliente de forma asíncrona, sanitizando los inputs para prevenir inyecciones y validando la estructura RAG antes de interactuar con el LLM (`Groq` o `Gemini`).
-3.  **Frontend Cliente:** `React` renderiza la UI usando `Vite`. Consume el endpoint `/chat` pasándole el `session_id`, interpretando las *Product Cards* que envía el backend para dibujar tarjetas interactivas de compras en lugar de texto plano.
+1.  **Ingesta Vectorial en Memoria:** Un script inteligente carga los archivos corporativos, los divide con `RecursiveCharacterTextSplitter`, y los indexa en **ChromaDB en Memoria RAM** (optimizando espacio y velocidad) usando Embeddings de Google Generative AI (modelo `text-embedding-004`).
+2.  **API RESTful en la Nube (Render):** `FastAPI` maneja las solicitudes asíncronamente en un contenedor de Render. Sanitiza los inputs contra inyecciones y valida la estructura RAG antes de pasarlo al LLM principal ultrarrápido (vía Groq API).
+3.  **Frontend Serverless (Netlify):** Aplicación de `React` servida globalmente desde la CDN de Netlify. Consume los endpoints del backend en vivo a través de CORS de manera segura, renderizando componentes interactivos en vez de solo texto.
 
 ## 💻 Tecnologías y Herramientas
 
 ### Backend (Cerebro IA)
 *   **Python 3.10+** (FastAPI, Uvicorn)
 *   **LangChain** (Agentes, Prompts, Tools, Retrievers, TextLoaders)
-*   **Bases de Datos Vectoriales:** ChromaDB
-*   **Modelos LLM:** LLaMA 3 / Mixtral (vía Groq API) y Google Gemini 1.5.
-*   **Bases de Datos Relacionales:** SQLite3 (Para historiales y metadata de eCommerce).
+*   **Bases de Datos Vectoriales:** ChromaDB (In-Memory)
+*   **Modelos LLM:** LLaMA 3 / Mixtral (vía Groq API) y Google Gemini 1.5 Embeddings.
+*   **Base de Datos Relacional:** SQLite3
 
 ### Frontend (Interfaz Gráfica)
-*   **React 18** (Vite, Hooks, Context API)
+*   **React 18** (Vite, Hooks, Context API, React Router)
 *   **CSS Vanilla & Tailwind CSS** (Estilos y variables de diseño)
 *   **Three.js / React Three Fiber** (Gráficos interactivos 3D en WebGL)
-*   **Framer Motion & MagicUI** (Animaciones cinéticas y diseño premium holográfico)
+*   **Framer Motion & MagicUI** (Animaciones cinéticas y diseño holográfico)
 
 ## ⚙️ Instrucciones de Ejecución Local
 
-Este repositorio está dividido en dos partes. Necesitas abrir dos terminales para correr ambos entornos de forma simultánea.
+Si deseas probar el entorno de desarrollo en tu propia máquina:
 
 ### 1. Iniciar el Backend (Servidor Python)
-Abre la primera terminal y dirígete al backend:
+Abre una terminal y dirígete al backend:
 ```bash
 cd backend
 python -m venv venv
@@ -54,24 +54,29 @@ venv\Scripts\activate
 
 pip install -r requirements.txt
 ```
-**Configura tu entorno:** Renombra el archivo `.env.example` a `.env` y pega tus claves API (GROQ_API_KEY o GOOGLE_API_KEY).
+**Configura tu entorno:** Renombra el archivo `.env.example` a `.env` y añade tus variables:
+*   `GROQ_API_KEY`: Tu clave de Groq (para el motor de texto)
+*   `GOOGLE_API_KEY`: Tu clave de Google AI Studio (para embeddings, modelo `text-embedding-004`)
 
-Arranca la API:
+Arranca la API local:
 ```bash
 uvicorn api:app --reload
 ```
-*El servidor correrá en `http://localhost:8000`.*
+*El servidor correrá en `http://localhost:8000` y auto-creará los productos en SQLite al iniciar.*
 
 ### 2. Iniciar el Frontend (Aplicación Web React)
-Abre una segunda terminal en la carpeta frontend:
+Abre otra terminal en la carpeta frontend:
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
-*El sitio estará disponible en `http://localhost:5173`.*
+*El sitio estará disponible en `http://localhost:5173`. Para que se conecte localmente en vez de ir al backend en producción de Render, debes cambiar temporalmente la variable `API_URL` en los archivos `.jsx`.*
 
-> **Tip para Testing:** En la página principal del Frontend encontrarás dos botones. Uno te lleva al **Store Chat** (versión pública/ventas) y el otro al **Admin Dashboard** (versión corporativa). Cada interfaz le inyecta una semilla distinta al Backend para cambiar el comportamiento y permisos de la Inteligencia Artificial.
+## ☁️ Despliegue en la Nube (Producción)
+Este proyecto está preparado para hacer un despliegue CI/CD automático:
+- **Backend**: Despliegue usando el archivo `render.yaml` como "Web Service" en **Render**.
+- **Frontend**: Vincula la carpeta `frontend/` en **Netlify** o Vercel (`npm run build`).
 
 ---
 *Desarrollado y pulido por Camilo para el Challenge AluraAgente de Alura Latam y Oracle ONE.*
