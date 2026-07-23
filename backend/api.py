@@ -43,6 +43,15 @@ load_dotenv()
 
 app = FastAPI(title="TechStore AI Enterprise API", description="SaaS Backend con Auth, Reranking, Orders y Reviews")
 
+# Inicializar y poblar base de datos en el arranque (crítico para Render)
+try:
+    database.init_db()
+    import subprocess
+    subprocess.run(["python", "seed_real_products.py"], check=True)
+    logger.info("Base de datos inicializada y poblada correctamente en el arranque.")
+except Exception as e:
+    logger.error(f"Error al inicializar la base de datos en el arranque: {e}")
+
 # ============================================
 # VALIDACIÓN DE ENTORNO (2026 - Supply Chain)
 # ============================================
