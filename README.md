@@ -17,12 +17,10 @@ Puedes probar el proyecto completamente funcional en la nube a través de los si
 > **Para el evaluador / visitante:** A continuación se evidencia el funcionamiento del proyecto y su robusta interfaz Premium.
 
 ### Interfaz del Store
-*(Añade aquí una captura de pantalla de la página principal del Store con productos)*
-![Store UI](./assets/demo_store.jpg) <!-- Reemplaza esto subiendo tu propia imagen a una carpeta assets/ -->
+![Store UI](./assets/demo_store.png)
 
 ### Dashboard Privado Admin
-*(Añade aquí una captura del Admin Chat realizando consultas sobre inventario)*
-![Admin UI](./assets/demo_admin.jpg) <!-- Reemplaza esto subiendo tu propia imagen a una carpeta assets/ -->
+![Admin UI](./assets/demo_admin.png)
 
 ### 🎥 Video Demostrativo
 En el siguiente video se puede evidenciar el funcionamiento completo:
