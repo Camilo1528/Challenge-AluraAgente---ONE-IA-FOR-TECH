@@ -1,5 +1,38 @@
 # 🚀 TechStore - Asistente Virtual 3D con RAG & ReAct (Challenge Alura Agente)
 
+![Estado: Completado](https://img.shields.io/badge/Estado-Completado-success)
+![Despliegue: En%20Vivo](https://img.shields.io/badge/Despliegue-En_Vivo-brightgreen)
+
+## 🌐 Pruebas en Vivo (Live Demo)
+Puedes probar el proyecto completamente funcional en la nube a través de los siguientes enlaces:
+* 🛒 **TechStore Público (Ventas & Clientes):** [https://neon-hamster-4ebf49.netlify.app/](https://neon-hamster-4ebf49.netlify.app/)
+* 🔒 **Dashboard Admin Corporativo:** [https://neon-hamster-4ebf49.netlify.app/admin/chat](https://neon-hamster-4ebf49.netlify.app/admin/chat)
+
+*(Nota: Al estar hospedado el backend en Render gratuito, el primer mensaje puede tardar hasta ~50 segundos en responder mientras el contenedor "despierta" de su estado de hibernación).*
+
+## 📸 Demostración Visual y Funcionalidad
+
+> **Para el evaluador / visitante:** A continuación se evidencia el funcionamiento del proyecto y su robusta interfaz Premium.
+
+### Interfaz del Store
+*(Añade aquí una captura de pantalla de la página principal del Store con productos)*
+![Store UI](./assets/demo_store.jpg) <!-- Reemplaza esto subiendo tu propia imagen a una carpeta assets/ -->
+
+### Dashboard Privado Admin
+*(Añade aquí una captura del Admin Chat realizando consultas sobre inventario)*
+![Admin UI](./assets/demo_admin.jpg) <!-- Reemplaza esto subiendo tu propia imagen a una carpeta assets/ -->
+
+### 🎥 Video Demostrativo
+En el siguiente video se puede evidenciar el funcionamiento completo:
+- Cambio de ventanas (Store a Admin).
+- El Assistant IA consultando productos de SQLite.
+- El RAG trayendo documentos privados para el Admin.
+
+*(Añade aquí el link a tu video subido en YouTube, Loom, o el archivo .mp4)*
+[▶️ **Ver Video de Demostración**](https://tu-link-de-video-aqui.com)
+
+---
+
 ¡Bienvenido al repositorio oficial de **TechStore**! Este proyecto es una solución hiper-escalable y de calidad Enterprise para el "Challenge Alura Agente". Implementa un Asistente Virtual Inteligente dual (Atención a Clientes y Panel de Administrador) potenciado por Inteligencia Artificial Generativa.
 
 El proyecto está diseñado bajo una arquitectura de microservicios separando el **Backend (FastAPI + LangChain)** y el **Frontend (React + Three.js + MagicUI)**, asegurando un diseño premium, una respuesta ultrarrápida y un robusto aislamiento de datos corporativos.
