@@ -19,8 +19,16 @@ Puedes probar el proyecto completamente funcional en la nube a través de los si
 ### Interfaz del Store
 ![Store UI](./assets/demo_store.png)
 
+### Chat Público (Asistente de Ventas)
+*(Guarda tu imagen del chat público como `chat_store.png` dentro de la carpeta `assets/`)*
+![Store Chat](./assets/chat_store.png)
+
 ### Dashboard Privado Admin
 ![Admin UI](./assets/demo_admin.png)
+
+### Chat Privado (RRHH e Inventario RAG)
+*(Guarda tu imagen del chat de admin como `chat_admin.png` dentro de la carpeta `assets/`)*
+![Admin Chat](./assets/chat_admin.png)
 
 ### 🎥 Video Demostrativo
 En el siguiente video se puede evidenciar el funcionamiento completo:
