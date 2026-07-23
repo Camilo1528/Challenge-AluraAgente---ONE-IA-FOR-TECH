@@ -10,17 +10,10 @@ pydantic>=2.5
 langchain>=1.0
 langchain-groq>=0.1
 langchain-google-genai>=4.0
-langchain-huggingface>=0.1
 langchain-community>=0.4
 chromadb>=1.5
 langgraph>=0.4
 
-# Sentence Transformers (Embeddings locales)
-sentence-transformers>=3.0
-
-# HuggingFace Transformers (LLM local de respaldo)
-transformers>=4.40
-torch>=2.0
 
 # Data Processing
 pandas>=2.0

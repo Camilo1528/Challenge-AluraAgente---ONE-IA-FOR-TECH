@@ -28,7 +28,7 @@ const sounds = {
   modal: new Howl({ src: ['https://actions.google.com/sounds/v1/cartoon/pop.ogg'], volume: 0.5 })
 };
 
-const API_URL = 'https://camilo152893-techstore-api.hf.space';
+const API_URL = 'http://localhost:8000';
 
 const getImageUrl = (imageName) => {
   if (!imageName) return '';

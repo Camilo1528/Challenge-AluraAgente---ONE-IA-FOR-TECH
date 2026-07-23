@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const API_URL = 'https://camilo152893-techstore-api.hf.space';
+const API_URL = 'http://localhost:8000';
 
 
 function Login() {

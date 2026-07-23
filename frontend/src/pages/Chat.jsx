@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 
-const API_URL = 'https://camilo152893-techstore-api.hf.space';
+const API_URL = 'http://localhost:8000';
 
 
 // Sanitiza entrada de usuario para prevenir XSS e inyecciones
@@ -55,7 +55,7 @@ function Chat() {
   const startNewConversation = async () => {
     // Limpiar historial en el backend
     try {
-      const apiUrl = 'https://camilo152893-techstore-api.hf.space';
+      const apiUrl = 'http://localhost:8000';
       await fetch(`${apiUrl}/history/${sessionId}`, { method: 'DELETE' });
     } catch (e) {
       console.error('Error limpiando historial:', e);
@@ -70,7 +70,7 @@ function Chat() {
   useEffect(() => {
     const fetchHistory = async () => {
       try {
-        const apiUrl = 'https://camilo152893-techstore-api.hf.space';
+        const apiUrl = 'http://localhost:8000';
         const res = await fetch(`${apiUrl}/history/${sessionId}`);
         if (res.ok) {
           const data = await res.json();
@@ -125,7 +125,7 @@ function Chat() {
     setLoading(true);
 
     try {
-      const apiUrl = 'https://camilo152893-techstore-api.hf.space';
+      const apiUrl = 'http://localhost:8000';
       const response = await fetch(`${apiUrl}/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

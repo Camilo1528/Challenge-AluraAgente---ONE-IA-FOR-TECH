@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { TypingMessage } from './Chat';
 
-const API_URL = 'https://camilo152893-techstore-api.hf.space';
+const API_URL = 'http://localhost:8000';
 
 
 const getAdminSessionId = () => {
