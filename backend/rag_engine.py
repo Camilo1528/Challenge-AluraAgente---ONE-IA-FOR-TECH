@@ -228,7 +228,7 @@ class RAGEngine:
         self.output_validator = OutputValidator()
 
         logger.info("Cargando modelo de Embeddings ligero (Google Gemini API)...")
-        self.embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
+        self.embeddings = GoogleGenerativeAIEmbeddings(model="models/text-embedding-004")
 
         self.llm, self.using_huggingface = self._init_llm_with_fallback()
         self.document_provenance: Dict[str, Dict[str, Any]] = {}
